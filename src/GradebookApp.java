@@ -1,6 +1,7 @@
 
 //just for testing
 import java.util.ArrayList;
+import java.util.Collections;//sorting ArrayList numerically
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -58,7 +59,11 @@ class StudentGradebook extends Gradebook {
     public void displayGradebook() {
         System.out.println("\nGradebook:");
         for (String student : studentGrades.keySet()) {
-            System.out.println(student + ": " + studentGrades.get(student));
+        	ArrayList<Integer> gradesList = studentGrades.get(student);
+        	 //sort grades descending
+            gradesList.sort(Collections.reverseOrder());
+            System.out.println(student + ": " + gradesList);
+           
         }
     }
 }
