@@ -3,15 +3,16 @@
 import java.util.ArrayList;
 import java.util.Collections;//sorting ArrayList numerically
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 // Abstract class for gradebook functionality
 abstract class Gradebook {
-    protected HashMap<String, ArrayList<Integer>> studentGrades = new HashMap<>();
+    protected HashMap<String, ArrayList<HashMap<String, Integer>>> studentGrades = new HashMap<>();
 
     public abstract void addStudent(String studentName);
 
-    public abstract void addGrade(String studentName, int grade);
+    public abstract void addGrade(String studentName, String subject, int grade);
 
     public abstract double calculateAverage(String studentName);
 }
@@ -29,10 +30,12 @@ class StudentGradebook extends Gradebook {
     }
 
     @Override
-    public void addGrade(String studentName, int grade) {
+    public void addGrade(String studentName, String subject, int grade) {
         if (studentGrades.containsKey(studentName)) {
-            studentGrades.get(studentName).add(grade);
-            System.out.println("Added grade " + grade + " for " + studentName + ".");
+        	HashMap<String, Integer> gradeEntry = new HashMap<>();
+        	gradeEntry.put(subject, grade);
+            studentGrades.get(studentName).add(gradeEntry);
+            System.out.printf("Added grade %d for %s to %s.%n", grade, subject, studentName);
         } else {
             System.out.println("Student " + studentName + " does not exist. Add the student first.");
         }
@@ -41,15 +44,19 @@ class StudentGradebook extends Gradebook {
     @Override
     public double calculateAverage(String studentName) {
         if (studentGrades.containsKey(studentName)) {
-            ArrayList<Integer> grades = studentGrades.get(studentName);
+            ArrayList<HashMap<String, Integer>> grades = studentGrades.get(studentName);
             if (grades.isEmpty()) {
                 return 0.0;
             }
             int total = 0;
-            for (int grade : grades) {
-                total += grade;
+            int count = 0;
+            for (HashMap<String, Integer> gradeEntry: grades) {
+                for (int grade: gradeEntry.values()) {
+                	total += grade;
+                	count ++;                	
+                }
             }
-            return (double) total / grades.size();
+            return (double) total / count;
         } else {
             System.out.println("Student " + studentName + " does not exist.");
             return -1;
@@ -59,10 +66,13 @@ class StudentGradebook extends Gradebook {
     public void displayGradebook() {
         System.out.println("\nGradebook:");
         for (String student : studentGrades.keySet()) {
-        	ArrayList<Integer> gradesList = studentGrades.get(student);
-        	 //sort grades descending
-            gradesList.sort(Collections.reverseOrder());
-            System.out.println(student + ": " + gradesList);
+        	ArrayList<HashMap<String, Integer>> gradesList = studentGrades.get(student);
+            System.out.println(student + ": ");
+            for (HashMap<String, Integer> gradeEntry: gradesList) {
+            	for (Map.Entry<String, Integer> entry: gradeEntry.entrySet()) {
+            		System.out.println(" Subject: " + entry.getKey() + ", Grade: " + entry.getValue());
+            	}
+            }
            
         }
     }
@@ -100,9 +110,11 @@ public class GradebookApp implements GradebookOperations {
                 case 2 -> {
                     System.out.print("Enter student name: ");
                     String name = scanner.nextLine();
+                    System.out.print("Enter subject: ");
+                    String subject = scanner.nextLine();
                     System.out.print("Enter grade: ");
                     int grade = scanner.nextInt();
-                    gradebook.addGrade(name, grade);
+                    gradebook.addGrade(name, subject, grade);
                 }
                 case 3 -> {
                     System.out.print("Enter student name: ");
@@ -121,7 +133,7 @@ public class GradebookApp implements GradebookOperations {
             }
         }
     }
-
+    
     public static void main(String[] args) {
         GradebookApp app = new GradebookApp();
         app.start();
