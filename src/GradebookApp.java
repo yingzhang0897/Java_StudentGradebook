@@ -3,12 +3,15 @@
 import java.util.ArrayList;
 import java.util.Collections;//sorting ArrayList numerically
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 // Abstract class for gradebook functionality
 abstract class Gradebook {
     protected HashMap<String, ArrayList<HashMap<String, Integer>>> studentGrades = new HashMap<>();
+    
+    protected HashMap<String, Double> studentAverages = new HashMap<>();
 
     public abstract void addStudent(String studentName);
 
@@ -66,14 +69,27 @@ class StudentGradebook extends Gradebook {
     public void displayGradebook() {
         System.out.println("\nGradebook:");
         for (String student : studentGrades.keySet()) {
+        	//calculate and update average grade for each student
+        	double averageGrade = calculateAverage(student);
+        	studentAverages.put(student, averageGrade);
         	ArrayList<HashMap<String, Integer>> gradesList = studentGrades.get(student);
             System.out.println(student + ": ");
-            for (HashMap<String, Integer> gradeEntry: gradesList) {
+            for (HashMap<String, Integer> gradeEntry: gradesList) {   
+            	//each subject-grade pair is an entry, entrySet() return all subject-grade pairs of one student
             	for (Map.Entry<String, Integer> entry: gradeEntry.entrySet()) {
             		System.out.println(" Subject: " + entry.getKey() + ", Grade: " + entry.getValue());
             	}
             }
-           
+            System.out.printf(" Average grade for %s: %.2f%n", student, averageGrade);
+        }
+        //create a list from studentAverages HashMap
+        List<Map.Entry<String, Double>> studentAverageList = new ArrayList<>(studentAverages.entrySet());
+        // Sort the list by value (average grade) in descending order using reverseOrder
+        studentAverageList.sort(Map.Entry.comparingByValue(Collections.reverseOrder()));
+        //print the sorted entries
+        System.out.println("\nStudents sorted by average grades (descending): ");
+        for (Map.Entry<String, Double> entry: studentAverageList) {
+        	System.out.printf("%s: %.2f%n", entry.getKey(), entry.getValue());
         }
     }
 }
