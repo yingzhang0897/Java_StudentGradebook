@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 // Abstract class for gradebook functionality
 abstract class Gradebook {
@@ -68,28 +71,38 @@ class StudentGradebook extends Gradebook {
 
     public void displayGradebook() {
         System.out.println("\nGradebook:");
+        StringBuilder output = new StringBuilder();
+        
         for (String student : studentGrades.keySet()) {
         	//calculate and update average grade for each student
         	double averageGrade = calculateAverage(student);
         	studentAverages.put(student, averageGrade);
         	ArrayList<HashMap<String, Integer>> gradesList = studentGrades.get(student);
-            System.out.println(student + ": ");
+        	//instead of println(), append the string
+            output.append(student).append(": \n");
             for (HashMap<String, Integer> gradeEntry: gradesList) {   
             	//each subject-grade pair is an entry, entrySet() return all subject-grade pairs of one student
             	for (Map.Entry<String, Integer> entry: gradeEntry.entrySet()) {
-            		System.out.println(" Subject: " + entry.getKey() + ", Grade: " + entry.getValue());
+            		output.append(" Subject: ").append(entry.getKey()).append(" Grade: ").append(entry.getValue()).append("\n");     
             	}
             }
-            System.out.printf(" Average grade for %s: %.2f%n", student, averageGrade);
+            output.append(String.format(" Average grade for %s: %.2f%n", student, averageGrade));
         }
         //create a list from studentAverages HashMap
         List<Map.Entry<String, Double>> studentAverageList = new ArrayList<>(studentAverages.entrySet());
         // Sort the list by value (average grade) in descending order using reverseOrder
         studentAverageList.sort(Map.Entry.comparingByValue(Collections.reverseOrder()));
         //print the sorted entries
-        System.out.println("\nStudents sorted by average grades (descending): ");
+        output.append("\nStudents sorted by average grades (descending): \n");
         for (Map.Entry<String, Double> entry: studentAverageList) {
-        	System.out.printf("%s: %.2f%n", entry.getKey(), entry.getValue());
+        	output.append(String.format("%s: %.2f%n", entry.getKey(), entry.getValue()));
+        }
+        //write to file
+        try(FileWriter fileWriter = new FileWriter("StudentsGradebook.txt")) {
+        	fileWriter.write(output.toString());
+        	System.out.println("Succefully wrote to the file");      	
+        } catch(IOException e) {
+        	System.err.println("An error occurred" + e.getMessage());
         }
     }
 }
