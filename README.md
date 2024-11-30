@@ -20,8 +20,6 @@ The purpose of writing this software was to deepen my understanding of Java by b
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-
 - [Java Documentation](https://docs.oracle.com/javase/8/docs/)
 - [W3Schools Java Tutoria](https://www.w3schools.com/java/)
 
