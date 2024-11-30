@@ -1,6 +1,6 @@
 # Overview
 
-The Student Gradebook is a Java-based application for managing student records and grades. It allows users to add students, assign grades, calculate average grades, and display all student information in a well-structured gradebook format.
+The Student Gradebook is a Java-based application for managing student records and grades. It allows users to add students, assign grades, calculate average grades, display all student information in a well-structured gradebook format and write that into a text file.
 
 The purpose of writing this software was to deepen my understanding of Java by building a functional, real-world application. Through this project, I learned to structure code efficiently, implement dynamic user interactions, and utilize Java’s built-in data structures such as Hashmap.
 
